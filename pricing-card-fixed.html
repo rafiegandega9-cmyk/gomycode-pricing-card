@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GoMyCode Pricing Cards</title>
+    <style>
+      :root {
+        --bg: #0f1115;
+        --card: #ffffff;
+        --text: #1c1c1c;
+        --muted: #5c6370;
+        --accent: #e10600;
+        --accent-dark: #b80500;
+        --border: #ececec;
+        --shadow: 0 12px 32px rgba(15, 17, 21, 0.18);
+        --radius: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(160deg, #0f1115 0%, #1c2330 100%);
+        color: var(--text);
+        padding: 32px 16px;
+      }
+
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .page-header {
+        text-align: center;
+        color: #fff;
+        margin-bottom: 36px;
+      }
+
+      .page-header h1 {
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        margin-bottom: 8px;
+      }
+
+      .page-header p {
+        color: #c5c9d1;
+        font-size: 1rem;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      /* Fixed: original CSS used the invalid property name "box-shawdow" */
+      .card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 28px 24px;
+        text-align: center;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 40px rgba(15, 17, 21, 0.28);
+      }
+
+      .card h2 {
+        font-size: 1.35rem;
+        margin-bottom: 8px;
+      }
+
+      .card .price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 20px;
+      }
+
+      .card .price span {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .card ul {
+        list-style: none;
+        text-align: left;
+        margin: 0 0 24px;
+        flex: 1;
+      }
+
+      .card li {
+        padding: 10px 0 10px 28px;
+        border-bottom: 1px solid var(--border);
+        color: var(--muted);
+        position: relative;
+      }
+
+      .card li:last-child {
+        border-bottom: none;
+      }
+
+      .card li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .card button {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 16px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .card button:hover {
+        background: var(--accent-dark);
+      }
+
+      .card button:focus-visible {
+        outline: 3px solid #ffb3ae;
+        outline-offset: 2px;
+      }
+
+      .confirmation {
+        margin-top: 12px;
+        min-height: 2.8em;
+        font-size: 0.92rem;
+        color: #0f7b3a;
+        font-weight: 600;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 20px 12px;
+        }
+
+        .card {
+          padding: 22px 18px;
+        }
+
+        .card .price {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-header">
+        <h1>Choose your plan</h1>
+        <p>Reusable pricing cards built with HTML, CSS, and JavaScript.</p>
+      </header>
+      <section id="cards" class="cards" aria-label="Pricing plans"></section>
+    </main>
+
+    <script>
+      /**
+       * Builds one pricing card and returns the DOM element.
+       * Original markup issues that this replaces:
+       * - unclosed <h2> tag
+       * - invalid CSS property "box-shawdow"
+       */
+      function Card(title, price, features) {
+        const card = document.createElement("article");
+        card.className = "card";
+
+        const heading = document.createElement("h2");
+        heading.textContent = title;
+
+        const priceEl = document.createElement("p");
+        priceEl.className = "price";
+        priceEl.innerHTML = `${price}<span> / month</span>`;
+
+        const list = document.createElement("ul");
+        features.forEach(function (feature) {
+          const item = document.createElement("li");
+          item.textContent = feature;
+          list.appendChild(item);
+        });
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "Start Trial";
+
+        const confirmation = document.createElement("p");
+        confirmation.className = "confirmation";
+        confirmation.setAttribute("role", "status");
+        confirmation.setAttribute("aria-live", "polite");
+
+        button.addEventListener("click", function () {
+          confirmation.textContent =
+            "Your " + title + " trial has started. Welcome aboard!";
+        });
+
+        card.append(heading, priceEl, list, button, confirmation);
+        return card;
+      }
+
+      const plans = [
+        {
+          title: "Basic Plan",
+          price: "$9.99",
+          features: ["1 GB Storage", "Basic Support", "All Core Features"],
+        },
+        {
+          title: "Pro Plan",
+          price: "$19.99",
+          features: [
+            "50 GB Storage",
+            "Priority Support",
+            "Advanced Analytics",
+            "Custom Domain",
+          ],
+        },
+        {
+          title: "Premium Plan",
+          price: "$29.99",
+          features: [
+            "Unlimited Storage",
+            "24/7 Support",
+            "Team Collaboration",
+            "API Access",
+          ],
+        },
+      ];
+
+      const container = document.getElementById("cards");
+      plans.forEach(function (plan) {
+        container.appendChild(Card(plan.title, plan.price, plan.features));
+      });
+    </script>
+  </body>
+</html>
